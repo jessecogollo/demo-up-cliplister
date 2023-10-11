@@ -1,4 +1,11 @@
-import { Controller, Get, HttpCode, Post } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  HttpCode,
+  Post,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { Validate } from 'nestjs-typebox';
 
 import { AssetsService } from '../../../domains/assets/assets.service';
@@ -13,11 +20,18 @@ export class AssetsController {
   @HttpCode(201)
   @Validate({
     request: [{ type: 'body', schema: AssetDTO }],
+    response: Type.Void(),
   })
-  async createAsset(body: Asset): Promise<string | void> {
-    await this.assetsService.insert(body);
-    return Promise.resolve('Asset created');
-    // return this.assetsService.insert(body);
+  async createAsset(body: Asset): Promise<void> {
+    try {
+      await this.assetsService.insert(body);
+      return;
+    } catch (error) {
+      if (error.message === 'Invalid Type') {
+        throw new BadRequestException('Invalid Asset Type');
+      }
+      throw error;
+    }
   }
 
   // @Get()
@@ -34,7 +48,10 @@ export class AssetsController {
     response: AssetDTO,
   })
   async getById(id: string): Promise<Asset> {
-    console.log('controller id', id);
+    const asset = await this.assetsService.findOneBy(id);
+    if (!asset) {
+      throw new NotFoundException(`Asset with id ${id} not found`);
+    }
     return this.assetsService.findOneBy(id);
   }
 

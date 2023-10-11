@@ -4,7 +4,7 @@ import * as request from 'supertest';
 import { Repository } from 'typeorm';
 import { faker } from '@faker-js/faker';
 
-import { AppModule } from './../src/app.module';
+import { AppModule } from '../src/app.module';
 
 import { Assets } from '../src/domains/assets/assets.entity';
 import { Asset as AssestDTO } from '../src/domains/assets/assets.types';
@@ -36,34 +36,6 @@ describe('AppController (e2e)', () => {
   });
 
   describe('Assets endpoints', () => {
-    // describe('GET /assets', () => {
-    //   it('Given a list of assets stored in the DB, when the endpoint is called, then it should return all of them', async () => {
-    //     // Arrange
-    //     const assetList: Assets[] = await assetsRepository.find();
-
-    //     // Act
-    //     const response = await request(app.getHttpServer())
-    //       .get('/assets')
-    //       .expect(200);
-
-    //     // Asserts
-    //     expect(response.body.length).toEqual(assetList.length);
-    //   });
-
-    //   it('Given an empty list of assets stored in the DB, when the endpoint is called, then it should return an emtpy array', async () => {
-    //     // Arrange
-    //     await assetsRepository.clear();
-    //     const assetList: Assets[] = await assetsRepository.find();
-
-    //     // Act
-    //     const response = await request(app.getHttpServer())
-    //       .get('/assets')
-    //       .expect(200);
-
-    //     // Asserts
-    //     expect(response.body.length).toEqual(assetList.length);
-    //   });
-    // });
     describe('GET /assets/:id', () => {
       it('Given a assetId, when the endpoint is called and the asset exists, then it should return it', async () => {
         // Arrange
@@ -88,17 +60,17 @@ describe('AppController (e2e)', () => {
         await request(app.getHttpServer())
           .get(`/assets/${assetId}`)
           // .expect(200);
-          .expect(400);
+          .expect(404);
 
         // Asserts
         // expect(response.body).toEqual({});
       });
     });
     describe('POST /assets', () => {
-      it('Given a assetId, when the endpoint is called and the asset exists, then it should return it', async () => {
+      it('Given an assets, when the endpoint is called, then it should create it', async () => {
         // Arrange
         await assetsRepository.clear();
-        const assetToCreate: AssestDTO = Fixtures.createAsset(true);
+        const assetToCreate: AssestDTO = Fixtures.createAsset(false);
 
         // Act
         await request(app.getHttpServer())

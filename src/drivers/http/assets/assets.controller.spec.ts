@@ -20,9 +20,7 @@ describe('AssetsController', () => {
           provide: AssetsService,
           useValue: {
             insert: jest.fn(),
-            // findAll: jest.fn(),
             findOneBy: jest.fn(),
-            // findOneRandom: jest.fn(),
           },
         },
       ],
@@ -31,35 +29,6 @@ describe('AssetsController', () => {
     assetsService = module.get<AssetsService>(AssetsService);
     assetsController = module.get<AssetsController>(AssetsController);
   });
-
-  // describe('getAllAssets', () => {
-  //   it('Given a list of assets stored in the DB, when the controller is called, then it should return all of them', async () => {
-  //     // Arrange
-  //     const assetsList: Assets[] = [
-  //       Fixtures.createAsset(true),
-  //       Fixtures.createAsset(true),
-  //     ];
-
-  //     const findAllMock = jest
-  //       .spyOn(assetsService, 'findAll')
-  //       .mockResolvedValue(assetsList);
-
-  //     // Act
-  //     const result = await assetsController.getAllAssets();
-
-  //     // Asserts
-  //     expect(result).toEqual(assetsList);
-  //     expect(findAllMock).toHaveBeenCalled();
-  //   });
-
-  //   it('Given a list of assets stored in the DB, when the controller is called, then it should return all of them', async () => {
-  //     // Arrange
-  //     jest.spyOn(assetsService, 'findAll').mockRejectedValue(new Error());
-
-  //     // Asserts
-  //     await expect(assetsController.getAllAssets()).rejects.toThrow();
-  //   });
-  // });
 
   describe('getById', () => {
     it('Given an asset id, when the controller is called and the asset exists, then it should return the asset', async () => {
@@ -76,22 +45,6 @@ describe('AssetsController', () => {
       // Asserts
       expect(result).toEqual(asset);
       expect(findAllMock).toHaveBeenCalledWith(asset.id);
-    });
-
-    it('Given an asset id, when the controller is called and the asset does not exists, then it should return null', async () => {
-      // Arrange
-      const assetId: string = faker.string.uuid();
-
-      const findAllMock = jest
-        .spyOn(assetsService, 'findOneBy')
-        .mockResolvedValue(null);
-
-      // Act
-      const result = await assetsController.getById(assetId);
-
-      // Asserts
-      expect(result).toEqual(null);
-      expect(findAllMock).toHaveBeenCalledWith(assetId);
     });
 
     it('Given an assert id, when the controller is called and something went wrong, then it should return an error', async () => {

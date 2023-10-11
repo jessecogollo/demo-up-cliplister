@@ -11,7 +11,7 @@ import Fixtures from '../../../test/utils/fixtures';
 
 describe('AssetsService', () => {
   let service: AssetsService;
-  let repository: Repository<Assets>;
+  let repository: Repository<AssetDTO>;
   const AssetsRepositoryToken = getRepositoryToken(Assets);
 
   beforeEach(async () => {
@@ -22,16 +22,14 @@ describe('AssetsService', () => {
           provide: AssetsRepositoryToken,
           useValue: {
             insert: jest.fn(),
-            // find: jest.fn(),
             findOneBy: jest.fn(),
-            // delete: jest.fn(),
           },
         },
       ],
     }).compile();
 
     service = module.get<AssetsService>(AssetsService);
-    repository = module.get<Repository<Assets>>(AssetsRepositoryToken);
+    repository = module.get<Repository<AssetDTO>>(AssetsRepositoryToken);
   });
 
   describe('Insert', () => {
@@ -62,50 +60,15 @@ describe('AssetsService', () => {
     });
   });
 
-  // describe('findAll', () => {
-  //   it('Given some assets stored in the database, when the service is called, then assets should be returned', async () => {
-  //     // Arrange
-  //     const assetsData: Assets[] = [
-  //       Fixtures.createAsset(true),
-  //       Fixtures.createAsset(true),
-  //     ];
-
-  //     const findMock = jest
-  //       .spyOn(repository, 'find')
-  //       .mockResolvedValue(assetsData);
-
-  //     // Act
-  //     const assetsFromDB: Assets[] = await service.findAll();
-
-  //     // Asserts
-  //     expect(assetsFromDB).toEqual(assetsData);
-  //     expect(findMock).toHaveBeenCalled();
-  //   });
-
-  //   it('Given some assets stored in the database, when the service is called but something went wrong, then the function should return an error', async () => {
-  //     // Arrange
-  //     const findMock = jest
-  //       .spyOn(repository, 'find')
-  //       .mockRejectedValue(new Error());
-
-  //     // Asserts
-  //     await expect(service.findAll()).rejects.toThrow();
-  //     expect(findMock).toHaveBeenCalled();
-  //   });
-  // });
-
   describe('findOneBy', () => {
     it('Given an id, when the service is called and the asset exists, then asset should be returned', async () => {
       // Arrange
-      const assetData: Assets = Fixtures.createAsset(true);
-
+      const assetData: AssetDTO = Fixtures.createAsset(true);
       const findMock = jest
         .spyOn(repository, 'findOneBy')
         .mockResolvedValue(assetData);
-
       // Act
-      const assetFromDB: Assets = await service.findOneBy(assetData.id);
-
+      const assetFromDB: AssetDTO = await service.findOneBy(assetData.id);
       // Asserts
       expect(assetFromDB).toEqual(assetData);
       expect(findMock).toHaveBeenCalledWith({ id: assetData.id });
@@ -114,14 +77,11 @@ describe('AssetsService', () => {
     it('Given an id, when the service is called and the asset does not exists, then the service should return null', async () => {
       // Arrange
       const assetId: string = faker.string.alpha(10);
-
       const findMock = jest
         .spyOn(repository, 'findOneBy')
         .mockResolvedValue(null);
-
       // Act
-      const assetFromDB: Assets = await service.findOneBy(assetId);
-
+      const assetFromDB: AssetDTO = await service.findOneBy(assetId);
       // Asserts
       expect(assetFromDB).toEqual(null);
       expect(findMock).toHaveBeenCalledWith({ id: assetId });
@@ -132,7 +92,6 @@ describe('AssetsService', () => {
       const findMock = jest
         .spyOn(repository, 'findOneBy')
         .mockRejectedValue(new Error());
-
       // Asserts
       await expect(service.findOneBy(faker.string.alpha(10))).rejects.toThrow();
       expect(findMock).toHaveBeenCalled();

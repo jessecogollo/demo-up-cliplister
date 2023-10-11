@@ -3,7 +3,7 @@ import { faker } from '@faker-js/faker';
 export default {
   createAsset: (fullData = false) => ({
     name: faker.string.alpha(10),
-    type: faker.string.alpha(10),
+    type: faker.helpers.arrayElement(['picture', 'video']),
     url: faker.string.alpha(10),
     metadata: {
       mimetype: faker.string.alpha(10),
